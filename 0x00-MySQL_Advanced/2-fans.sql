@@ -1,8 +1,6 @@
--- A SQL script that ranks country origins of bands, ordered by 
--- the number of (non-unique) fans
--- Column names must be: origin and nb_fans
--- Your script can be executed on any database
+-- A script that contains Query to calculate the total number of fans
+-- grouped by origin and display the results in descending order of fan count.
 SELECT origin, SUM(fans) AS nb_fans
-    FROM metal_bands
-    GROUP BY origin
-    ORDER BY nb_fans DESC;
+FROM metal_bands
+GROUP BY origin
+ORDER BY nb_fans DESC
