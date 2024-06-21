@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-"""
-    Contains a function that list all the docuemnts in a mongodb collection
+"""Write a Python function that lists all documents in a collection:
+
+Prototype: def list_all(mongo_collection):
+Return an empty list if no document in the collection
+mongo_collection will be the pymongo collection object
 """
 
 
-defi list_all(mongo_collection):
+def list_all(mongo_collection):
    """
         Lists all document in a collection
 
