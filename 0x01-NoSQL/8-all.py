@@ -8,7 +8,6 @@ mongo_collection will be the pymongo collection object
 
 
 from pymongo.collection import Collection
-from typing import List, Dict, Any
 
 
 def list_all(mongo_collection):
