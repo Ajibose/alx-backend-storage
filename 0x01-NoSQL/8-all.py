@@ -4,10 +4,7 @@
 """
 
 
-from typing import List, Dict, Any
-
-
-def list_all(mongo_collection) -> List[Dict[str, any]]:
+defi list_all(mongo_collection):
    """
         Lists all document in a collection
 
