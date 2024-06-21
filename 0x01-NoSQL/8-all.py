@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-    A module that contains s function that Lists all documents in a collection
-"""
+"""A module that contains s function that Lists all documents in a collection"""
 from typing import List, Any, Dict
 from pymongo import MongoClient
 from pymongo.collection import Collection
