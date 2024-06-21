@@ -12,5 +12,8 @@ from pymongo.collection import Collection
 
 def list_all(mongo_collection: Collection) -> List[Dict[str, Any]]:
     """Return list of all docs in collection"""
+    if not mongo_collection:
+        return []
+    
     doc_list = [doc for doc in mongo_collection.find()]
     return doc_list
