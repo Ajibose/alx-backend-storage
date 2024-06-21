@@ -7,12 +7,11 @@ mongo_collection will be the pymongo collection object
 """
 
 
-import pymongo
 from pymongo.collection import Collection
 from typing import List, Dict, Any
 
 
-def list_all(mongo_collection: Collection) -> List[Dict[str, Any]]:
+def list_all(mongo_collection) -> List[Dict[str, Any]]:
     """Return list of all docs in collection"""
     if not mongo_collection:
         return []
