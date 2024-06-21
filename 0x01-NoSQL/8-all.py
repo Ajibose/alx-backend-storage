@@ -7,7 +7,15 @@ mongo_collection will be the pymongo collection object
 """
 
 def list_all(mongo_collection):
-    """lists all documents in a collection"""
+    """
+	Lists all document in a collection
+
+        mongo_collection:
+            A mongodb collection object
+
+        Returns:
+            List of all document in the collection
+    """
     if not mongo_collection:
         return []
 
