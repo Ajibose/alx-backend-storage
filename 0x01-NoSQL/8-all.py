@@ -8,14 +8,6 @@ from pymongo.collection import Collection
 
 
 def list_all(mongo_collection: Collection) -> List[Dict[str, Any]]:
-    """
-        Lists all document in a collection
-
-        mongo_collection:
-            A mongodb collection object
-
-        Returns:
-            List of all document in the collection
-    """
+    """Return list of all docs in collection"""
     doc_list = [doc for doc in mongo_collection.find()]
     return doc_list
