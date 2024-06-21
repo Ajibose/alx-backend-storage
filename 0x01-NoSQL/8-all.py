@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
-"""Write a Python function that lists all documents in a collection:
-
-Prototype: def list_all(mongo_collection):
-Return an empty list if no document in the collection
-mongo_collection will be the pymongo collection object
+"""
+    Contains a function that list all the docuemnts in a mongodb collection
 """
 
 
@@ -11,7 +8,15 @@ from typing import List, Dict, Any
 
 
 def list_all(mongo_collection) -> List[Dict[str, any]]:
-    """Return list of all docs in collection"""
+   """
+        Lists all document in a collection
+
+        mongo_collection:
+            A mongodb collection object
+
+        Returns:
+            List of all document in the collection
+    """ 
     if not mongo_collection:
         return []
 
