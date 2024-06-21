@@ -1,3 +1,2 @@
-// a script that inserts a document in the collection school
-
-db.school.insert({"name": "Holberton school"})
+// Inserts a document in a collection in a db passed as an argument
+db.school.insertOne({name: "Holberton school"})
