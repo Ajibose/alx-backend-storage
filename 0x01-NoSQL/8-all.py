@@ -7,9 +7,6 @@ mongo_collection will be the pymongo collection object
 """
 
 
-from pymongo.collection import Collection
-
-
 def list_all(mongo_collection):
     """Return list of all docs in collection"""
     if not mongo_collection:
