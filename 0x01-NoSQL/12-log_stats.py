@@ -1,40 +1,57 @@
 #!/usr/bin/env python3
-"""Write a Python script that provides some stats about Nginx
-logs stored in MongoDB:
+"""Write a function that provides some stats about a Nginx log collection
 
-Database: logs
-Collection: nginx
-Display (same as the example):
+prototype: show_stats(collection)
+collection is the collection object to use
+Display output in this format
 first line: x logs where x is the number of documents in this collection
 second line: Methods:
 5 lines with the number of documents with the method =
-["GET", "POST", "PUT", "PATCH", "DELETE"] in this order
-(see example below - warning: it’s a tabulation before each line)
-one line with the number of documents with:
-method=GET
-path=/status
-You can use this dump as data sample: dump.zip
+["GET", "POST", "PUT", "PATCH", "DELETE"]
+one line with the number of documents with: method=GET, path=/status
 """
 
 
-import pymongo
-from pymongo import MongoClient
+def show_stats(collection, method):
+    """show stats about Nginx logs"""
+    no_of_docs = collection.count_documents({})
+    docs_with_get = collection.count_documents(
+            {'method': {"$in": [method[0]]}})
+    docs_with_post = collection.count_documents(
+            {'method': {"$in": [method[1]]}})
+    docs_with_put = collection.count_documents(
+            {'method': {"$in": [method[2]]}})
+    docs_with_patch = collection.count_documents(
+            {'method': {"$in": [method[3]]}})
+    docs_with_delete = collection.count_documents(
+            {'method': {"$in": [method[4]]}})
+    docs_with_get_status = collection.count_documents({
+        '$and': [
+            {'method': {"$in": [method[0]]}},
+            {'path': '/status'}
+        ]
+    })
+
+    print("{} logs\nMethods:\n"
+          "\tmethod GET: {}\n"
+          "\tmethod POST: {}\n"
+          "\tmethod PUT: {}\n"
+          "\tmethod PATCH: {}\n"
+          "\tmethod DELETE: {}\n"
+          "{} status check".format(
+                no_of_docs,
+                docs_with_get,
+                docs_with_post,
+                docs_with_put,
+                docs_with_patch,
+                docs_with_delete,
+                docs_with_get_status
+            ))
 
 
-def log_nginx_stats(mongo_collection):
-    """provides some stats about Nginx logs"""
-    print(f"{mongo_collection.estimated_document_count()} logs")
+if __name__ == '__main__':
+    from pymongo import MongoClient
 
-    print("Methods:")
-    for method in ["GET", "POST", "PUT", "PATCH", "DELETE"]:
-        count = mongo_collection.count_documents({"method": method})
-        print(f"\tmethod {method}: {count}")
-
-    number_of_gets = mongo_collection.count_documents(
-        {"method": "GET", "path": "/status"})
-    print(f"{number_of_gets} status check")
-
-
-if __name__ == "__main__":
-    mongo_collection = MongoClient('mongodb://127.0.0.1:27017').logs.nginx
-    log_nginx_stats(mongo_collection)
+    client = MongoClient('mongodb://127.0.0.1:27017')
+    nginx_collection = client.logs.nginx
+    show_stats(nginx_collection, ["GET", "POST", "PUT", "PATCH", "DELETE"])
