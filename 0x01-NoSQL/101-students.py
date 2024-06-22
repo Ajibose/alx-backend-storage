@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Write a function that returns all document sorted bt their average score
 
 Prototype: def top_students(mongo_collection):
