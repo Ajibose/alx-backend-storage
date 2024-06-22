@@ -14,7 +14,7 @@ def list_all(mongo_collection):
         Returns:
             List of all document in the collection
     """
-    if not mongo_collection:
+    if mongo_collection is None:
         return []
 
     return [doc for doc in mongo_collection.find()]
