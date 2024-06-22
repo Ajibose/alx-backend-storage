@@ -1,19 +1,16 @@
 #!/usr/bin/env python3
-"""Write a Python function that changes all topics of a
-school document based on the name:
+"""Write a fuction that changes all topics of a school document
 
-Prototype: def update_topics(mongo_collection, name, topics):
-mongo_collection will be the pymongo collection object
-name (string) will be the school name to update
-topics (list of strings) will be the list of topics approached
-in the school
+prototype: update_topics(mongo_collection, name, topics)
+mongo_collection will the collection that contains the document to update
+name will be the filter condition
+topics will be the updated value of topics field
 """
 
 
-import pymongo
-
-
 def update_topics(mongo_collection, name, topics):
-    """changes all topics of a school document"""
-    return mongo_collection.update_many({"name": name},
-                                        {"$set": {"topics": topics}})
+    """changes all topics of a school document based on the name"""
+    if mongo_collection is None:
+        return
+
+    mongo_collection.update_one({'name': name}, {'$set': {'topics': topics}})
