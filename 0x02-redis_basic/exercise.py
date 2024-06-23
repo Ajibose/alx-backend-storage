@@ -4,6 +4,20 @@
 from typing import Union, Callable, Optional
 import redis
 import uuid
+import functools
+
+
+def count_calls(method: Callable) -> Callable:
+    """Count how many times fn was called"""
+    key = method.__qualname__
+
+    @functools.wraps(method)
+    def warpper(self, *args, **kwargs):
+        """Wraps around a method"""
+        self._redis.incr(key)
+        return method(self, *args, **kwargs)
+
+    return warpper
 
 
 class Cache():
@@ -15,6 +29,7 @@ class Cache():
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Generate a random key and store data using the generated key"""
         if not data:
