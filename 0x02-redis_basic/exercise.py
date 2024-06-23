@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Reddis Database class
 """
-from typing import Union
+from typing import Union, Callable, Optional
 import redis
 import uuid
 
@@ -23,3 +23,21 @@ class Cache():
         key = str(uuid.uuid4())
         self._redis.set(key, data)
         return key
+
+    def get(self, key: str, fn: Optional[
+            Callable] = None) -> Union[str, bytes, int, float]:
+        """Retrieve data from the server and trnsaform"""
+        val = self._redis.get(key)
+        if val and fn:
+            val = fn(val)
+
+        return val
+
+    def get_int(self, key: str) -> int:
+        """Retrieve data from the server and trnsaform integer"""
+        return self.get(key, int)
+
+    def get_str(self, key: str) -> str:
+        """Retrieve data from the server and trnsaform to string"""
+        val = self.get(key, lambda d: d.decode('utf-8'))
+        return val
