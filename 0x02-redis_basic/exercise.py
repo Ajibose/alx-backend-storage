@@ -7,6 +7,29 @@ import uuid
 import functools
 
 
+def replay(method: Callable):
+    """display the history of calls of a particular function"""
+    method_name = method.__qualname__
+    instance = method.__self__
+    cls_name = type(instance).__name__
+
+    redis = getattr(instance, "_redis", None)
+    if not redis:
+        print("Redis connection not found")
+        return
+
+    method_called_times = redis.get(method_name)
+    input_list = redis.lrange(f"{method_name}:inputs", 0, -1)
+    output_list = redis.lrange(f"{method_name}:outputs", 0, -1)
+    print(list(output_list))
+    print(f"{method_name} was called {int(method_called_times)} times")
+    for (input, output) in zip(input_list, output_list):
+        print(
+                f"{method_name}(*{input.decode('utf-8')}) "
+                "-> {output.decode('utf-8')}"
+            )
+
+
 def call_history(method: Callable) -> Callable:
     """Decorated function to tore the input from and output to the server"""
     method_name = method.__qualname__
