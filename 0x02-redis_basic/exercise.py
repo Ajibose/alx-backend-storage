@@ -28,7 +28,6 @@ def replay(method: Callable):
 
     input_list = r.lrange(f"{method_name}:inputs", 0, -1)
     output_list = r.lrange(f"{method_name}:outputs", 0, -1)
-    print(list(output_list))
     print(f"{method_name} was called {method_called_times} times:")
     for input_data, output_data in zip(input_list, output_list):
         try:
