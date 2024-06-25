@@ -3,11 +3,11 @@ import requests
 import redis
 import functools
 
-# Initialize Redis client
 r = redis.Redis()
 
 def count_url_request(fn):
     """A decorator to count the number of requests to a URL"""
+
     @functools.wraps(fn)
     def wrapper(url: str):
         """A wrapper function"""
@@ -15,7 +15,6 @@ def count_url_request(fn):
         cache_key = f"cache:{url}"
         cached_result = r.get(cache_key)
         if cached_result:
-            r.incr(key)
             return cached_result
 
         r.incr(key)
