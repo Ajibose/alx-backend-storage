@@ -1,40 +1,46 @@
 #!/usr/bin/env python3
-"""Write a fucntion that obtain the HTML content of a URL using request mod"""
 import requests
-import functools
 import redis
+import functools
 
+# Initialize Redis client
+r = redis.Redis()
 
 def count_request(fn):
-    """A decorator function to cache the number of request to a url"""
-    r = redis.Redis()
-
+    """A decorator to count the number of requests to a URL"""
     @functools.wraps(fn)
-    def wrapper(*args, **kwargs):
+    def wrapper(url: str):
         """A wrapper function"""
-        key_count = r.get(f"count:{args[0]}")
-        key = f"count:{args[0]}"
-        if not key_count:
-            r.set(key, 0, 10)
-
-        res = fn(*args, **kwargs)
-        if res:
-            r.incr(key)
-        return res
-
+        key = f"count:{url}"
+        r.incr(key)
+        return fn(url)
     return wrapper
 
-@count_request
-def get_page(url: str) -> str:
-    """obtain the HTML content of a particular URL and returns it."""
-    response = requests.get(url)
+def cache_result(expire_time: int):
+    """A decorator to cache the result of a function with expiration"""
+    def decorator(fn):
+        @functools.wraps(fn)
+        def wrapper(url: str):
+            """A wrapper function"""
+            cache_key = f"cache:{url}"
+            cached_result = r.get(cache_key)
+            if cached_result:
+                return cached_result.decode('utf-8')
+            result = fn(url)
+            r.setex(cache_key, expire_time, result)
+            return result
+        return wrapper
+    return decorator
 
-    content = ""
-    if response.status_code == 200:
-        content = response.text
-     
-    return content
+@count_request
+@cache_result(10)
+def get_page(url: str) -> str:
+    """Obtain the HTML content of a particular URL and return it."""
+    response = requests.get(url)
+    response.raise_for_status()  # Raise an exception for HTTP errors
+    return response.text
 
 if __name__ == '__main__':
-    content = get_page("http://slowwly.robertomurray.co.uk")
+    url = "http://slowwly.robertomurray.co.uk"
+    content = get_page(url)
     print(content)
