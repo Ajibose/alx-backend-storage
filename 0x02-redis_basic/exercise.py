@@ -23,11 +23,17 @@ def replay(method: Callable):
     output_list = redis.lrange(f"{method_name}:outputs", 0, -1)
     print(list(output_list))
     print(f"{method_name} was called {int(method_called_times)} times")
-    for (input, output) in zip(input_list, output_list):
-        print(
-                f"{method_name}(*{input.decode('utf-8')}) "
-                "-> {output.decode('utf-8')}"
-            )
+    for (input_data, output_data) in zip(input_list, output_list):
+        try:
+            input_data = input_data.decode('utf-8')
+        except Exception:
+            input_data = ""
+
+        try:
+            output_data = output_data.decode('utf-8')
+        except Exception:
+            output_data = ""
+        print(f"{method_name}(*{input_data}) -> {output_data}")
 
 
 def call_history(method: Callable) -> Callable:
