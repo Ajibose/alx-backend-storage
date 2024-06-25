@@ -18,7 +18,6 @@ def replay(method: Callable):
         print("Redis connection not found")
         return
 
-
     method_called_times = redis.get(method_name)
     try:
         method_called_times = int(method_called_times.decode("utf-8"))
