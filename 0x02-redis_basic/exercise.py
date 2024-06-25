@@ -13,7 +13,7 @@ def replay(method: Callable):
     instance = method.__self__
     cls_name = type(instance).__name__
 
-    #redis = getattr(instance, "_redis", None)
+    """redis = getattr(instance, "_redis", None)"""
     if not redis:
         print("Redis connection not found")
         return
@@ -21,6 +21,11 @@ def replay(method: Callable):
     r = redis.Redis()
 
     method_called_times = r.get(method_name)
+    try:
+        method_called_times = int(method_called_times.decode("utf-8"))
+    except Exception:
+        method_called_times = 0
+
     input_list = r.lrange(f"{method_name}:inputs", 0, -1)
     output_list = r.lrange(f"{method_name}:outputs", 0, -1)
     print(list(output_list))
