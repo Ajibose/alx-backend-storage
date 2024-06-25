@@ -7,6 +7,23 @@ import uuid
 import functools
 
 
+def call_history(method: Callable) -> Callable:
+    """Decorated function to tore the input from and output to the server"""
+    method_name = method.__qualname__
+    input_key = f"{method_name}:inputs"
+    output_key = f"{method_name}:outputs"
+
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """The wrapper for storing history"""
+        self._redis.rpush(input_key, str(args))
+        res = method(self, *args, **kwargs)
+        self._redis.rpush(output_key, res)
+        return res
+
+    return wrapper
+
+
 def count_calls(method: Callable) -> Callable:
     """Count how many times fn was called"""
     key = method.__qualname__
@@ -29,6 +46,7 @@ class Cache():
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Generate a random key and store data using the generated key"""
